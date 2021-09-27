@@ -85,3 +85,27 @@ char **tokenize(char* str)
   tokens[i] = '\0';
   returns tokens;
 }
+
+void print_tokens(char **tokens)
+{
+  int i = 0;
+  while(tokens[i] != 0)
+  {
+    printf("\ntokens[%i] = '%s'", i,tokens[i]);
+    i++;
+  }
+  printf("\ntoken[%i] = '[%s]'", i, tokens[i]);
+  printf("\n");
+}
+
+void free_tokens(char **tokens)
+{
+  int i = 0;
+  while(token[i] != 0)
+  {
+    free(tokens[i]);
+    i++;
+  }
+  free(token[i]);
+  free(token);
+}
