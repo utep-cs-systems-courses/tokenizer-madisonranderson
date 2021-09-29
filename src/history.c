@@ -1,4 +1,5 @@
 #include "history.h"
+#include "tokenizer.h"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -26,32 +27,35 @@ int numChar(char *str)
 
 List* init_history()
 {
-  List* history;
-  history = (List*)malloc(sizeof(List));
-  history->root = NULL;
+  List* history = malloc(sizeof(List));
   return history;
 }
 
-void add_history(List *list, char str)
+void add_history(List *list, char *str)
 {
-  Item* node = (Item *)malloc(sizeof(Item));
-  node->str = (char *)malloc(sizeof(char) * numChar(str));
-  node->str = copyStr(node->str, str);
-  node->next = NULL;
-  Item* current = list->root;
-  if(current == NULL)
+  if(!list->root)
   {
-    node->id = 0;
+    Item *node = (Item *)malloc(sizeof(Item));
+    (*node).id = 0;
+    char *newStr = copy_str(str, find_length(str));
+    (*node).str = newStr;
     list->root = node;
   }
   else
   {
-    while(current != NULL && current->next != NULL)
+    int current_id = 1;
+    Item *temp = list->root;
+    while(temp->next)
     {
-      curr = current-next;
+      current_id++;
+      temp = temp->next;
     }
-    node->id = curr->id+1;
-    curr->next = node;
+    Item *node = malloc(sizeof(Item));
+    (*node).id = current_id;
+    char *newStr = copy_str(str, find_length(str));
+    (*node).str = newStr;
+    (*node).next = 0;
+    temp->next = node;
   }
 }
 
@@ -64,22 +68,23 @@ char *get_history(List *list, int id)
   }
   else
   {
-    while(current != NULL)
+    while(current)
     {
-      if(current->id != id)
+      if(current->id == id)
       {
-	return current->str;
+	char *newStr = current->str;
+	return newStr;
       }
       current = current->next;
     }
   }
-  return NULL;
+  return 0;
 }
 
 void print_history(List *list)
 {
-  Item* current = list->root;
-  while(current != NULL)
+  Item *current = list->root;
+  while(current)
   {
     printf("n%i: %s\n", current->id, current->str);
     current = current->next;
@@ -88,12 +93,22 @@ void print_history(List *list)
 
 void free_history(List *list)
 {
-  Item* current = list->root;
-  while(current != NULL)
+  Item *current = list->root;
+  while(current)  
   {
-    Item* tem = current;
+    free(current);
     current = current->next;
-    free(tem);
   }
   free(list);
+}
+
+int find_length(char *str)
+{
+  int length = 0;
+  while(*str)
+    {
+      length++;
+      str++;
+    }
+  return length;
 }

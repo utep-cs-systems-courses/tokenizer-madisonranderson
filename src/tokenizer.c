@@ -1,4 +1,6 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include "tokenizer.h"
 
 int space_char(char c)
 {
@@ -21,20 +23,20 @@ int non_space_char(char c)
 char *word_start(char *s)
 {
    int pointer = 0;
-   if(space_char(s[pointer])
+   if(space_char(s[pointer]))
    {
      s++;
    }
-   while(space_char(s[pointer])
+   while(space_char(s[pointer]))
    {
      pointer++;
    }
-   return (str++);
+   return (s++);
 }
 
 char *word_terminator(char *word)
 {
-  char *c = str;
+  char *c = word;
   while(non_space_char(*c) && *c != '\0')
   {
     c++;
@@ -44,52 +46,55 @@ char *word_terminator(char *word)
 
 int count_words(char *str)
 {
-  char *c = str;
-  if (word_start(str) == 0)
+  int count = 0;
+  while(*str)
   {
-      return 0;
+    str = word_start(str);
+    if(*str == '\0')
+    {
+      return count;
+    }
+    str = word_terminator(str);
+    count++;
   }
-  if(*word_terminator(word_start(str)) == 0)
-  {
-    return 1;
-  }
-  return count_word(word_terminator(word_start(str)))+1;
+  return count;
 }
 
 char *copy_str(char *inStr, short len)
 {
-  char * new_src = (char *)malloc(sizeof(char)*len+1);
+  char *newStr = (char *)malloc(sizeof(char)*len+1);
   int i;
   for(i = 0; i < len; i++)
     {
-      new_src[i] = inStr[i];
+      newStr[i] = inStr[i];
     }
-  new_src[i] = '\0';
-  return new_src;
+  newStr[i] = '\0';
+  return newStr;
 }  
 
 char **tokenize(char* str)
 {
-  int i;
   int numberOfWords = count_words(str);
-  char **tokens = (char **)malloc(sizeof(char*)*(numberOfWords+1));
-  char *start = str;
-  char *end = str;
+  char **tokens = malloc((numberOfWords+1)*(sizeof(char*)));
 
-  for(i = 0; i < numberOfWords; i++)
+  for(int i = 0; i < numberOfWords; i++)
+  {
+    if(str[0] == ' ')
     {
-      start = word_start(end);
-      end = word_end(start);
-      tokend[i] = copy_str(start, end-start);
+      str = word_start(str);
     }
-  tokens[i] = '\0';
-  returns tokens;
+    int length = word_terminator(str) - word_start(str);
+    tokens[i] = copy_str(str, length);
+    str = word_start(word_terminator(str));
+  }	 
+  tokens[numberOfWords] = 0;
+  return tokens;
 }
 
 void print_tokens(char **tokens)
 {
   int i = 0;
-  while(tokens[i] != 0)
+  while(tokens[i])
   {
     printf("\ntokens[%i] = '%s'", i,tokens[i]);
     i++;
@@ -100,12 +105,11 @@ void print_tokens(char **tokens)
 
 void free_tokens(char **tokens)
 {
-  int i = 0;
-  while(token[i] != 0)
+  char **tokensCopy = tokens;
+  while(*tokens)
   {
-    free(tokens[i]);
-    i++;
+    free(*tokens);
+    tokens++;
   }
-  free(token[i]);
-  free(token);
+  free(tokensCopy);
 }
