@@ -4,44 +4,48 @@
 
 int space_char(char c)
 {
-  if(c == ' ' || c == '\t')
-    {
+  if((c == '\t' || c == ' ') && c != '\0'){
       return 1;
-    }
+  }
   return 0;
 }
 
 int non_space_char(char c)
 {
-  if(c != ' ' || c != '\t')
-    {
-      return 1;
-    }
+  if(c != '\t' && c != '\0' && c != ' '){
+    return 1;
+  }
   return 0;
 }
 
-char *word_start(char *s)
+char *word_start(char *str)
 {
-   int pointer = 0;
-   if(space_char(s[pointer]))
-   {
-     s++;
-   }
-   while(space_char(s[pointer]))
-   {
-     pointer++;
-   }
-   return (s++);
+  while(1)
+  {
+    if(!space_char(*str))
+    {
+      return str;
+    }
+    if(space_char(*str))
+    {
+      str++;
+    }
+  }
 }
 
 char *word_terminator(char *word)
 {
-  char *c = word;
-  while(non_space_char(*c) && *c != '\0')
-  {
-    c++;
-  }
-  return c;
+  while(1)
+    {
+      if(non_space_char(*word) == 0)
+      {
+	return word;
+      }
+      if(non_space_char(*word) == 1)
+      {
+	word++;
+      }
+    }
 }
 
 int count_words(char *str)
@@ -62,21 +66,20 @@ int count_words(char *str)
 
 char *copy_str(char *inStr, short len)
 {
-  char *newStr = (char *)malloc(sizeof(char)*len+1);
+  char *newStr = malloc((len+1)*sizeof(char));
   int i;
   for(i = 0; i < len; i++)
     {
       newStr[i] = inStr[i];
     }
-  newStr[i] = '\0';
+  newStr[len] = '\0';
   return newStr;
 }  
 
 char **tokenize(char* str)
 {
   int numberOfWords = count_words(str);
-  char **tokens = malloc((numberOfWords+1)*(sizeof(char*)));
-
+  char **tokens = (char**) malloc((numberOfWords+1)*sizeof(char*));
   for(int i = 0; i < numberOfWords; i++)
   {
     if(str[0] == ' ')
@@ -93,14 +96,13 @@ char **tokenize(char* str)
 
 void print_tokens(char **tokens)
 {
-  int i = 0;
-  while(tokens[i])
+  int count = 1;
+  while(*tokens)
   {
-    printf("\ntokens[%i] = '%s'", i,tokens[i]);
-    i++;
+    printf("word[%i] = %s\n", count, *tokens);
+    count++;
+    tokens++;
   }
-  printf("\ntoken[%i] = '[%s]'", i, tokens[i]);
-  printf("\n");
 }
 
 void free_tokens(char **tokens)

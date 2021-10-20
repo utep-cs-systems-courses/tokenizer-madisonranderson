@@ -2,7 +2,7 @@
 #include "tokenizer.h"
 #include <stdio.h>
 #include <stdlib.h>
-
+/*
 char* copyStr(char* dest, char* src)
 {
   int i;
@@ -11,8 +11,8 @@ char* copyStr(char* dest, char* src)
     dest[i] = src[i];
   }
   dest[i] = '\0';
-}
-
+  }
+*/
 int numChar(char *str)
 {
   int i = 0;
@@ -28,21 +28,12 @@ int numChar(char *str)
 List* init_history()
 {
   List* history = malloc(sizeof(List));
+  history->root = malloc(sizeof(Item));
   return history;
 }
 
 void add_history(List *list, char *str)
 {
-  if(!list->root)
-  {
-    Item *node = (Item *)malloc(sizeof(Item));
-    (*node).id = 0;
-    char *newStr = copy_str(str, find_length(str));
-    (*node).str = newStr;
-    list->root = node;
-  }
-  else
-  {
     int current_id = 1;
     Item *temp = list->root;
     while(temp->next)
@@ -53,10 +44,9 @@ void add_history(List *list, char *str)
     Item *node = malloc(sizeof(Item));
     (*node).id = current_id;
     char *newStr = copy_str(str, find_length(str));
-    (*node).str = newStr;
-    (*node).next = 0;
+    node->str = newStr;
+    node->next = NULL;
     temp->next = node;
-  }
 }
 
 char *get_history(List *list, int id)
