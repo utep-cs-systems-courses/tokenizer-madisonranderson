@@ -28,25 +28,31 @@ int numChar(char *str)
 List* init_history()
 {
   List* history = malloc(sizeof(List));
-  history->root = malloc(sizeof(Item));
   return history;
 }
 
 void add_history(List *list, char *str)
 {
     int current_id = 1;
-    Item *temp = list->root;
-    while(temp->next)
-    {
-      current_id++;
-      temp = temp->next;
+    if(!list->root){
+      Item *item = malloc(sizeof(Item));
+      (*item).id = 0;
+      (*item).str = copy_str(str, numChar(str));
+      list->root = item;
+    } else {
+      Item *temp = list->root;
+      while(temp->next)
+	{
+	  current_id++;
+	  temp = temp->next;
+	}
+      Item *node = malloc(sizeof(Item));
+      (*node).id = current_id;
+      char *newStr = copy_str(str, find_length(str));
+      node->str = newStr;
+      node->next = NULL;
+      temp->next = node;
     }
-    Item *node = malloc(sizeof(Item));
-    (*node).id = current_id;
-    char *newStr = copy_str(str, find_length(str));
-    node->str = newStr;
-    node->next = NULL;
-    temp->next = node;
 }
 
 char *get_history(List *list, int id)
